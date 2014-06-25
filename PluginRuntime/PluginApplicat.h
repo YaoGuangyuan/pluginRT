@@ -18,17 +18,17 @@
 #endif
 
 /*
- * 插件的变量值类型
+ * 插件的变量值类型，前置声明
  */
 struct PluginValue;
 
 /*
- * 插件的运行时方法
+ * 插件的运行时方法，前置声明
  */
 struct PluginMethod;
 
 /*
- * 插件的运行时环境
+ * 插件的运行时环境，前置声明
  */
 struct PluginRuntime;
 

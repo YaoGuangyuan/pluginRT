@@ -1,5 +1,5 @@
-#ifndef Plugin_Runtime_1_H
-#define Plugin_Runtime_1_H
+#ifndef Plugin_Runtime_Private_H
+#define Plugin_Runtime_Private_H
 
 #include "PluginApplicat.h"
 
@@ -259,4 +259,4 @@ struct PluginRuntime
 	{}
 };
 
-#endif /*Plugin_Runtime_1_H*/
+#endif /* Plugin_Runtime_Private_H */

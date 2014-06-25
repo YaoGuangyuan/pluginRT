@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginExample.h">
+      <Filter>PluginExample</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="PluginExample.cpp">
+      <Filter>PluginExample</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Application">
+      <UniqueIdentifier>{62938f86-8fd2-4b11-ab3c-26804073d719}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PluginExample">
+      <UniqueIdentifier>{81ebc06d-433d-4205-97fa-ea6db4b77cba}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

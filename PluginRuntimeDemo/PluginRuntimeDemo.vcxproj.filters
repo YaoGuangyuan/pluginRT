@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PluginRuntimeDemo.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Application">
+      <UniqueIdentifier>{6d520621-a686-49ea-991e-f72f3a102753}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

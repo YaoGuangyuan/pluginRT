@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PluginRuntime", "PluginRuntime\PluginRuntime.vcxproj", "{C63E196F-B97A-4F64-8DA8-0C2A992254FC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PluginExample", "PluginExample\PluginExample.vcxproj", "{6A5BE953-DE90-4FD9-9842-1DB754D21572}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PluginRuntimeDemo", "PluginRuntimeDemo\PluginRuntimeDemo.vcxproj", "{34A289DE-20E5-42D6-845C-3B4B91597602}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C63E196F-B97A-4F64-8DA8-0C2A992254FC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C63E196F-B97A-4F64-8DA8-0C2A992254FC}.Debug|Win32.Build.0 = Debug|Win32
+		{C63E196F-B97A-4F64-8DA8-0C2A992254FC}.Release|Win32.ActiveCfg = Release|Win32
+		{C63E196F-B97A-4F64-8DA8-0C2A992254FC}.Release|Win32.Build.0 = Release|Win32
+		{6A5BE953-DE90-4FD9-9842-1DB754D21572}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6A5BE953-DE90-4FD9-9842-1DB754D21572}.Debug|Win32.Build.0 = Debug|Win32
+		{6A5BE953-DE90-4FD9-9842-1DB754D21572}.Release|Win32.ActiveCfg = Release|Win32
+		{6A5BE953-DE90-4FD9-9842-1DB754D21572}.Release|Win32.Build.0 = Release|Win32
+		{34A289DE-20E5-42D6-845C-3B4B91597602}.Debug|Win32.ActiveCfg = Debug|Win32
+		{34A289DE-20E5-42D6-845C-3B4B91597602}.Debug|Win32.Build.0 = Debug|Win32
+		{34A289DE-20E5-42D6-845C-3B4B91597602}.Release|Win32.ActiveCfg = Release|Win32
+		{34A289DE-20E5-42D6-845C-3B4B91597602}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
