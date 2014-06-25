@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginApplicat.h">
+      <Filter>PluginRuntime</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginRuntime.h">
+      <Filter>PluginRuntime</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginRuntime0.h">
+      <Filter>PluginRuntime</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginRuntimePrivate.h">
+      <Filter>PluginRuntime</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="PluginRuntime.cpp">
+      <Filter>PluginRuntime</Filter>
+    </ClCompile>
+    <ClCompile Include="PluginRuntime0.cpp">
+      <Filter>PluginRuntime</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Application">
+      <UniqueIdentifier>{6f133151-351c-4d79-bb6b-ab571c135a00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PluginRuntime">
+      <UniqueIdentifier>{8281853b-1816-441f-af20-22f23eedc90e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
