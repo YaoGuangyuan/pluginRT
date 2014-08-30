@@ -7,72 +7,70 @@
 #include <string>
 using namespace std;
 
-void Add(struct PluginMethod* method, void* object)
+PluginValue* Add(PluginMethod* method, void* object, PluginValue* arg)
 {
 	int m1;
-	GetIntValue(GetValueAt(method, 0), &m1);
+	GetIntValue(arg, 0, &m1);
 
 	int m2;
-	GetIntValue(GetValueAt(method, 1), &m2);
+	GetIntValue(arg, 1, &m2);
 
-	ClearValues(method);
-
-	PushIntValue(method, m1 + m2);
+	PluginValue* ret = MallocValue();
+	PushIntValue(ret, m1 + m2);
+	return ret;
 }
 
-void Cat(struct PluginMethod* method, void* object)
+PluginValue* Cat(PluginMethod* method, void* object, PluginValue* arg)
 {
-	struct PluginValue* value = GetValueAt(method, 0);
-	int len1 = GetStringValueLength(value);
+	int len1 = GetStringValueLength(arg, 0);
 	char* str1 = new char[len1 + 1];
-	GetStringValue(value, str1, len1 + 1);
+	GetStringValue(arg, 0, str1, len1 + 1);
 
-	value = GetValueAt(method, 1);
-	int len2 = GetStringValueLength(value);
+	int len2 = GetStringValueLength(arg, 1);
 	char* str2 = new char[len2 + 1];
-	GetStringValue(value, str2, len2 + 1);
+	GetStringValue(arg, 1, str2, len2 + 1);
 
 	string s1(str1, len1);
 	string s2(str2, len2);
 	string s = s1 + s2;
 
-	ClearValues(method);
+	delete str1;
+	delete str2;
 
-	PushStringValue(method, s.c_str(), s.length());
+	PluginValue* ret = MallocValue();
+	PushStringValue(ret, s.c_str(), s.length());
+	return ret;
 }
 
-void Vet(struct PluginMethod* method, void* object)
+PluginValue* Vet(PluginMethod* method, void* object, PluginValue* arg)
 {
 	bool m;
-	GetBoolValue(GetValueAt(method, 0), &m);
+	GetBoolValue(arg, 0, &m);
 
-	ClearValues(method);
-
-	PushBoolValue(method, !m);
+	PluginValue* ret = MallocValue();
+	PushBoolValue(ret, !m);
+	return ret;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	struct PluginRuntime* env = CreatePluginRuntime("demo");
+	PluginRuntime* env = CreatePluginRuntime("demo");
 
 	PluginMethodHandle add;
 	add.name = "Add";
 	add.argv = "(ii)i";
-	add.object = NULL;
 	add.method = Add;
 	RegisterPluginMethod(env, add);
 
 	PluginMethodHandle cat;
 	cat.name = "Cat";
-	cat.argv = "(^s^s)^s";
-	cat.object = NULL;
+	cat.argv = "(ss)s";
 	cat.method = Cat;
 	RegisterPluginMethod(env, cat);
 
 	PluginMethodHandle vet;
 	vet.name = "Vet";
 	vet.argv = "(b)b";
-	vet.object = NULL;
 	vet.method = Vet;
 	RegisterPluginMethod(env, vet);
 
@@ -80,7 +78,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	 * 加载运行插件
 	 */
 	{
-		typedef void (*OnPluginLoad)(struct PluginRuntime* env);
+		typedef void (*OnPluginLoad)(PluginRuntime* env);
 		
 		HMODULE pluginDll = LoadLibraryA("PluginExample.dll");
 

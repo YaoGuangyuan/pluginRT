@@ -2,12 +2,29 @@
 #include "PluginRuntime.h"
 #include "PluginRuntimePrivate.h"
 
-/*
+/**
+ * 获取插件运行时对象
+ */
+void* GetPluginObject(PluginRuntime* env, const char* yclass, const char* name)
+{
+	if (env != nullptr)
+	{
+		string object_id = string(yclass) + "::" + string(name);
+		auto iter = env->_objects.find(object_id);
+		if (iter != env->_objects.end())
+		{
+			return (*iter).second;
+		}
+	}
+	return nullptr;
+}
+
+/**
  * 获取插件方法
  */
-struct PluginMethod* GetPluginMethod(struct PluginRuntime* env, const char* name, const char* argv)
+PluginMethod* GetPluginMethod(PluginRuntime* env, const char* name, const char* argv)
 {
-	if (env != NULL)
+	if (env != nullptr)
 	{
 		string method_id = string(name) + "@" + string(argv);
 		auto iter = env->_methods.find(method_id);
@@ -16,234 +33,410 @@ struct PluginMethod* GetPluginMethod(struct PluginRuntime* env, const char* name
 			return (*iter).second.get();
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
-/*
+/**
  * 调用插件方法
  */
-void CallPluginMethod(struct PluginRuntime* env, struct PluginMethod* method)
+PluginValue* CallPluginMethod(PluginRuntime* env, PluginMethod* method, void* obj, PluginValue* arg)
 {
-	if (env != NULL && method != NULL)
+	if (env != nullptr && method != nullptr)
 	{
-		string method_id = method->_name + "@" + method->_argv;
-		auto iter = env->_methods.find(method_id);
-		if (iter != env->_methods.end())
-		{
-			method->_method(method, method->_object);
-		}
+		return method->_method(method, obj, arg);
+	}
+	return nullptr;
+}
+
+/**
+ * 获取值句柄
+ */
+PluginValue* MallocValue()
+{
+	return new PluginValue();
+}
+
+/**
+ * 释放值句柄
+ */
+void ReleaseValue(PluginValue* value)
+{
+	if (value != nullptr)
+	{
+		delete value;
 	}
 }
 
-/*
- * 获取方法的变量个数
+/**
+ * 获取变量的个数
  */
-int GetValuesCount(struct PluginMethod* method)
+uint32_t GetValueCount(PluginValue* value)
 {
-	if (method != NULL)
+	if (value != nullptr)
 	{
-		return method->_values.size();
+		return value->values.size();
 	}
-	return -1;
+	return 0;
 }
 
-/*
- * 清除方法的变量列表
+/**
+ * 获取 bool ('b') 类型的值
  */
-void ClearValues(struct PluginMethod* method)
+bool GetBoolValue(PluginValue* value, uint32_t at, bool* ret)
 {
-	if (method != NULL)
+	if (value != nullptr && at < value->values.size())
 	{
-		method->_values.clear();
-	}
-}
-
-/*
- * 获取方法的变量的值
- */
-struct PluginValue* GetValueAt(struct PluginMethod* method, int at)
-{
-	if (method != NULL && at < GetValuesCount(method))
-	{
-		return &method->_values.at(at);
-	}
-	return NULL;
-}
-
-/*
- * 获取 int 类型的值
- */
-bool GetIntValue(struct PluginValue* value, int* ret)
-{
-	if (value != NULL)
-	{
-		return value->GetIntValue(*ret);
+		return value->values.at(at).GetBoolValue(*ret);
 	}
 	return false;
 }
 
-/*
- * 获取 bool 类型的值
+/**
+ * 获取 byte ('B') 类型的值
  */
-bool GetBoolValue(struct PluginValue* value, bool* ret)
+bool GetByteValue(PluginValue* value, uint32_t at, unsigned char* ret)
 {
-	if (value != NULL)
+	if (value != nullptr && at < value->values.size())
 	{
-		return value->GetBoolValue(*ret);
+		return value->values.at(at).GetByteValue(*ret);
 	}
 	return false;
 }
 
-/*
- * 获取 char 类型的值
+/**
+ * 获取 short ('h') 类型的值
  */
-bool GetCharValue(struct PluginValue* value, char* ret)
+bool GetShortValue(PluginValue* value, uint32_t at, short* ret)
 {
-	if (value != NULL)
+	if (value != nullptr && at < value->values.size())
 	{
-		return value->GetCharValue(*ret);
+		return value->values.at(at).GetShortValue(*ret);
 	}
 	return false;
 }
 
-/*
- * 获取 float 类型的值
+/**
+ * 获取 unsigned short ('H') 类型的值
  */
-bool GetFloatValue(struct PluginValue* value, float* ret)
+bool GetUnsignedShortValue(PluginValue* value, uint32_t at, unsigned short* ret)
 {
-	if (value != NULL)
+	if (value != nullptr && at < value->values.size())
 	{
-		return value->GetFloatValue(*ret);
+		return value->values.at(at).GetUShortValue(*ret);
 	}
 	return false;
 }
 
-/*
- * 获取 double 类型的值
+/**
+ * 获取 int ('i') 类型的值
  */
-bool GetDoubleValue(struct PluginValue* value, double* ret)
+bool GetIntValue(PluginValue* value, uint32_t at, int* ret)
 {
-	if (value != NULL)
+	if (value != nullptr && at < value->values.size())
 	{
-		return value->GetDoubleValue(*ret);
+		return value->values.at(at).GetIntValue(*ret);
 	}
 	return false;
 }
 
-/*
- * 获取 char* 类型的值的长度
+/**
+ * 获取 unsigned int ('I') 类型的值
  */
-int GetStringValueLength(struct PluginValue* value)
+bool GetUnsignedIntValue(PluginValue* value, uint32_t at, unsigned int* ret)
 {
-	if (value != NULL)
+	if (value != nullptr && at < value->values.size())
+	{
+		return value->values.at(at).GetUIntValue(*ret);
+	}
+	return false;
+}
+
+/**
+ * 获取 long ('l') 类型的值
+ */
+bool GetLongValue(PluginValue* value, uint32_t at, long* ret)
+{
+	if (value != nullptr && at < value->values.size())
+	{
+		return value->values.at(at).GetLongValue(*ret);
+	}
+	return false;
+}
+
+/**
+ * 获取 unsigned long ('k') 类型的值
+ */
+bool GetUnsignedLongValue(PluginValue* value, uint32_t at, unsigned long* ret)
+{
+	if (value != nullptr && at < value->values.size())
+	{
+		return value->values.at(at).GetULongValue(*ret);
+	}
+	return false;
+}
+
+/**
+ * 获取 long long ('L') 类型的值
+ */
+bool GetLongLongValue(PluginValue* value, uint32_t at, long long* ret)
+{
+	if (value != nullptr && at < value->values.size())
+	{
+		return value->values.at(at).GetLongLongValue(*ret);
+	}
+	return false;
+}
+
+/**
+ * 获取 unsigned long long ('K') 类型的值
+ */
+bool GetUnsignedLongLongValue(PluginValue* value, uint32_t at, unsigned long long* ret)
+{
+	if (value != nullptr && at < value->values.size())
+	{
+		return value->values.at(at).GetULongLongValue(*ret);
+	}
+	return false;
+}
+
+/**
+ * 获取 float ('f') 类型的值
+ */
+bool GetFloatValue(PluginValue* value, uint32_t at, float* ret)
+{
+	if (value != nullptr && at < value->values.size())
+	{
+		return value->values.at(at).GetFloatValue(*ret);
+	}
+	return false;
+}
+
+/**
+ * 获取 double ('d') 类型的值
+ */
+bool GetDoubleValue(PluginValue* value, uint32_t at, double* ret)
+{
+	if (value != nullptr && at < value->values.size())
+	{
+		return value->values.at(at).GetDoubleValue(*ret);
+	}
+	return false;
+}
+
+/**
+ * 获取 char ('c') 类型的值
+ */
+bool GetCharValue(PluginValue* value, uint32_t at, char* ret)
+{
+	if (value != nullptr && at < value->values.size())
+	{
+		return value->values.at(at).GetCharValue(*ret);
+	}
+	return false;
+}
+
+/**
+ * 获取 char* ('s') 类型的值的长度
+ */
+uint32_t GetStringValueLength(PluginValue* value, uint32_t at)
+{
+	if (value != nullptr && at < value->values.size())
 	{
 		string ret;
-		value->GetStringValue(ret);
+		value->values.at(at).GetStringValue(ret);
 		return ret.length();
 	}
-	return -1;
+	return 0;
 }
 
-/*
- * 获取 char* 类型的值
+/**
+ * 获取 char* ('s') 类型的值
  */
-bool GetStringValue(struct PluginValue* value, char* str, int len)
+bool GetStringValue(PluginValue* value, uint32_t at, char* str, uint32_t len)
 {
-	if (value != NULL)
+	if (value != nullptr && at < value->values.size())
 	{
 		string ret;
-		value->GetStringValue(ret);
+		value->values.at(at).GetStringValue(ret);
 		strcpy_s(str, len, ret.c_str());
 		return true;
 	}
 	return false;
 }
 
-/*
- * 获取 void* 类型的值
+/**
+ * 获取 void* ('p') 类型的值
  */
-void* GetVoidPtrValue(struct PluginValue* value)
+void* GetVoidPtrValue(PluginValue* value, uint32_t at)
 {
-	if (value != NULL)
+	if (value != nullptr && at < value->values.size())
 	{
-		return value->GetVoidPtrValue();
+		return value->values.at(at).GetVoidPtrValue();
 	}
-	return NULL;
+	return nullptr;
 }
 
-/*
- * 设置 int 类型的值
+/**
+ * 设置 bool ('b') 类型的值
  */
-void PushIntValue(struct PluginMethod* method, int value)
+void PushBoolValue(PluginValue* value, bool vl)
 {
-	if (method != NULL)
+	if (value != nullptr)
 	{
-		method->_values.push_back(PluginValue().SetIntValue(value));
-	}
-}
-
-/*
- * 设置 bool 类型的值
- */
-void PushBoolValue(struct PluginMethod* method, bool value)
-{
-	if (method != NULL)
-	{
-		method->_values.push_back(PluginValue().SetBoolValue(value));
+		value->values.push_back(PValue().SetBoolValue(vl));
 	}
 }
 
-/*
- * 设置 char 类型的值
+/**
+ * 设置 byte ('B') 类型的值
  */
-void PushCharValue(struct PluginMethod* method, char value)
+void PushByteValue(PluginValue* value, unsigned char vl)
 {
-	if (method != NULL)
+	if (value != nullptr)
 	{
-		method->_values.push_back(PluginValue().SetCharValue(value));
+		value->values.push_back(PValue().SetByteValue(vl));
 	}
 }
 
-/*
- * 设置 float 类型的值
+/**
+ * 设置 short ('h') 类型的值
  */
-void PushFloatValue(struct PluginMethod* method, float value)
+void PushShortValue(PluginValue* value, short vl)
 {
-	if (method != NULL)
+	if (value != nullptr)
 	{
-		method->_values.push_back(PluginValue().SetFloatValue(value));
+		value->values.push_back(PValue().SetShortValue(vl));
 	}
 }
 
-/*
- * 设置 double 类型的值
+/**
+ * 设置 unsigned short ('H') 类型的值
  */
-void PushDoubleValue(struct PluginMethod* method, double value)
+void PushUnsignedShortValue(PluginValue* value, unsigned short vl)
 {
-	if (method != NULL)
+	if (value != nullptr)
 	{
-		method->_values.push_back(PluginValue().SetDoubleValue(value));
+		value->values.push_back(PValue().SetUShortValue(vl));
 	}
 }
 
-/*
- * 设置 char* 类型的值
+/**
+ * 设置 int ('i') 类型的值
  */
-void PushStringValue(struct PluginMethod* method, const char* str, int len)
+void PushIntValue(PluginValue* value, int vl)
 {
-	if (method != NULL)
+	if (value != nullptr)
 	{
-		method->_values.push_back(PluginValue().SetStringValue(string(str, len)));
+		value->values.push_back(PValue().SetIntValue(vl));
 	}
 }
 
-/*
- * 设置 void* 类型的值
+/**
+ * 设置 unsigned int ('I') 类型的值
  */
-void PushVoidPtrValue(struct PluginMethod* method, void* value)
+void PushUnsignedIntValue(PluginValue* value, unsigned int vl)
 {
-	if (method != NULL)
+	if (value != nullptr)
 	{
-		method->_values.push_back(PluginValue().SetVoidPtrValue(value));
+		value->values.push_back(PValue().SetUIntValue(vl));
+	}
+}
+
+/**
+ * 设置 long ('l') 类型的值
+ */
+void PushLongValue(PluginValue* value, long vl)
+{
+	if (value != nullptr)
+	{
+		value->values.push_back(PValue().SetLongValue(vl));
+	}
+}
+
+/**
+ * 设置 unsigned long ('k') 类型的值
+ */
+void PushUnsignedLongValue(PluginValue* value, unsigned long vl)
+{
+	if (value != nullptr)
+	{
+		value->values.push_back(PValue().SetULongValue(vl));
+	}
+}
+
+/**
+ * 设置 long long ('L') 类型的值
+ */
+void PushLongLongValue(PluginValue* value, long long vl)
+{
+	if (value != nullptr)
+	{
+		value->values.push_back(PValue().SetLongLongValue(vl));
+	}
+}
+
+/**
+ * 设置 unsigned long long ('K') 类型的值
+ */
+void PushUnsignedLongLongValue(PluginValue* value, unsigned long long vl)
+{
+	if (value != nullptr)
+	{
+		value->values.push_back(PValue().SetULongLongValue(vl));
+	}
+}
+
+/**
+ * 设置 float ('f') 类型的值
+ */
+void PushFloatValue(PluginValue* value, float vl)
+{
+	if (value != nullptr)
+	{
+		value->values.push_back(PValue().SetFloatValue(vl));
+	}
+}
+
+/**
+ * 设置 double ('d') 类型的值
+ */
+void PushDoubleValue(PluginValue* value, double vl)
+{
+	if (value != nullptr)
+	{
+		value->values.push_back(PValue().SetDoubleValue(vl));
+	}
+}
+
+/**
+ * 设置 char ('c') 类型的值
+ */
+void PushCharValue(PluginValue* value, char vl)
+{
+	if (value != nullptr)
+	{
+		value->values.push_back(PValue().SetCharValue(vl));
+	}
+}
+
+/**
+ * 设置 char* ('s') 类型的值
+ */
+void PushStringValue(PluginValue* value, const char* str, uint32_t len)
+{
+	if (value != nullptr)
+	{
+		value->values.push_back(PValue().SetStringValue(string(str, len)));
+	}
+}
+
+/**
+ * 设置 void* ('p') 类型的值
+ */
+void PushVoidPtrValue(PluginValue* value, void* vl)
+{
+	if (value != nullptr)
+	{
+		value->values.push_back(PValue().SetVoidPtrValue(value));
 	}
 }

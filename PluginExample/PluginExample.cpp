@@ -4,12 +4,12 @@
 /*
  * 运行时环境变量
  */
-static struct PluginRuntime* g_env;
+static PluginRuntime* g_env;
 
 /*
  * 和JNI很像吧
  */
-void OnPluginLoad(struct PluginRuntime* env)
+void OnPluginLoad(PluginRuntime* env)
 {
 	g_env = env;
 }
@@ -19,31 +19,56 @@ void OnPluginLoad(struct PluginRuntime* env)
  */
 void Call()
 {
-	struct PluginMethod* Add = GetPluginMethod(g_env, "Add", "(ii)i");
-	ClearValues(Add);
-	PushIntValue(Add, 3);
-	PushIntValue(Add, 4);
-	CallPluginMethod(g_env, Add);
+	// Add
+	{
+		PluginMethod* Add = GetPluginMethod(g_env, "Add", "(ii)i");
+
+		PluginValue* value = MallocValue();
+		PushIntValue(value, 3);
+		PushIntValue(value, 4);
+
+		PluginValue* ret = CallPluginMethod(g_env, Add, NULL, value);
+
+		int m1;
+		GetIntValue(ret, 0, &m1);
+
+		ReleaseValue(ret);
+		ReleaseValue(value);
+	}
 	
-	int m1;
-	GetIntValue(GetValueAt(Add, 0), &m1);
+	// Cat
+	{
+		PluginMethod* Cat = GetPluginMethod(g_env, "Cat", "(ss)s");
 
-	struct PluginMethod* Cat = GetPluginMethod(g_env, "Cat", "(^s^s)^s");
-	ClearValues(Cat);
-	PushStringValue(Cat, "abc", strlen("abc"));
-	PushStringValue(Cat, "def", strlen("def"));
-	CallPluginMethod(g_env, Cat);
+		PluginValue* value = MallocValue();
+		PushStringValue(value, "abc", strlen("abc"));
+		PushStringValue(value, "def", strlen("def"));
 
-	struct PluginValue* value = GetValueAt(Cat, 0);
-	int len1 = GetStringValueLength(value);
-	char* str1 = new char[len1 + 1];
-	GetStringValue(value, str1, len1 + 1);
+		PluginValue* ret = CallPluginMethod(g_env, Cat, NULL, value);
 
-	struct PluginMethod* Vet = GetPluginMethod(g_env, "Vet", "(b)b");
-	ClearValues(Vet);
-	PushBoolValue(Vet, true);
-	CallPluginMethod(g_env, Vet);
+		int len1 = GetStringValueLength(ret, 0);
+		char* str1 = new char[len1 + 1];
+		GetStringValue(ret, 0, str1, len1 + 1);
 
-	bool b;
-	GetBoolValue(GetValueAt(Vet, 0), &b);
+		ReleaseValue(ret);
+		ReleaseValue(value);
+
+		delete str1;
+	}
+	
+	// Vet
+	{
+		PluginMethod* Vet = GetPluginMethod(g_env, "Vet", "(b)b");
+
+		PluginValue* value = MallocValue();
+		PushBoolValue(value, true);
+
+		PluginValue* ret = CallPluginMethod(g_env, Vet, NULL, value);
+
+		bool b;
+		GetBoolValue(ret, 0, &b);
+
+		ReleaseValue(ret);
+		ReleaseValue(value);
+	}
 }

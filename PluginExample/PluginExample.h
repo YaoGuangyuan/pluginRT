@@ -12,6 +12,6 @@
 
 #include "../PluginRuntime/PluginRuntime.h"
 
-extern "C" PLUGINEXAMPLE_API void OnPluginLoad(struct PluginRuntime* env);
+extern "C" PLUGINEXAMPLE_API void OnPluginLoad(PluginRuntime* env);
 
 extern "C" PLUGINEXAMPLE_API void Call();
